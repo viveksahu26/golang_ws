@@ -1,0 +1,116 @@
+1) Go programs are composed by package
+2) the package's name and the name of the folder that contains that package can be different.
+3) package <pkgName> (In this case is package main) tells us this source file belongs to main package, and the keyword main tells us this package will be compiled to a program instead of package files whose extensions are .a
+4) The function main.main() (this function must be in the main package) is the entry point of any program. 
+4) Every executable program has one and only one main package, and you need an entry function called main without any arguments or return values in the main package.
+5) packages in Go is similar to Python, and there are some advantages:
+---> Modularity (break up your program into many modules) and 
+---> reusability (every module can be reused in many programs).
+
+Define variables
+--> := to replace var and type, this is called a short assignment
+--> It has one limitation: this form can only be used inside of a functions. You will get compile errors if you try to use it outside of function bodies. Therefore, we usually use var to define global variables.
+--> _ (blank) is a special variable name. Any value that is given to it will be ignored.
+--> If you don't use variables that you've defined in your program, the compiler will give you compilation errors.
+
+Constants
+--> So-called constants are the values that are determined during compile time and you cannot change them during runtime.
+Ex:- const Pi float32 = 3.1415926
+
+Elementary types
+Numerical types
+--> Note that rune is alias of int32 and byte is alias of uint8
+
+String
+--> Strings are represented by double quotes "" or backticks `` .
+--> It's impossible to change string values by index. You will get errors when you compile the following code.
+
+    var s string = "hello"
+    s[0] = 'c'
+
+--> What if I really want to change just one character in a string? Try the following code.
+
+    s := "hello"
+    c := []byte(s)  // convert string to []byte type
+    c[0] = 'c'
+    s2 := string(c)  // convert back to string type
+    fmt.Printf("%s\n", s2)
+
+--> use the + operator to combine two strings.
+
+Error types
+Go has one error type for purpose of dealing with error messages. There is also a package called errors to handle errors.
+
+err := errors.New("emit macho dwarf: elf header corrupted")
+if err != nil {
+    fmt.Print(err)
+}
+
+Some skills
+--> Define by group
+--> iota enumerate : Go has one keyword called iota, this keyword is to make enum, it begins with 0, increased by 1
+
+Some rules
+
+The reason that Go is concise because it has some default behaviors.
+
+    Any variable that begins with a capital letter means it will be exported, private otherwise.
+    The same rule applies for functions and constants, no public or private keyword exists in Go.
+
+
+array, slice, map
+
+var arr [n]type
+
+in [n]type, n is the length of the array, type is the type of its elements.
+
+Because length is a part of the array type, [3]int and [4]int are different types, so we cannot change the length of arrays. 
+When you use arrays as arguments, functions get their copies instead of references! If you want to use references, you may want to use slice.
+
+Ex:- 
+    a := [3]int{1, 2, 3} // define an int array with 3 elements
+
+    b := [10]int{1, 2, 3}
+    // define a int array with 10 elements, of which the first three are assigned.
+    //The rest of them use the default value 0.
+
+    c := [...]int{4, 5, 6} // use `…` to replace the length parameter and Go will calculate it for you.
+    var arr [10]int  // an array of type [10]int
+
+slice
+--> the array type is not a good choice -for instance when we don't know how long the array will be when we define it. Thus, we need a "dynamic array". This is called slice in Go.
+--> slice is not really a dynamic array. It's a reference type. slice points to an underlying array whose declaration is similar to array, but doesn't need length.
+Ex:- 
+    var fslice []int
+
+slice has some convenient operations.
+
+    slice is 0-based, ar[:n] equals to ar[0:n]
+    The second index will be the length of slice if omitted, ar[n:] equals to ar[n:len(ar)].
+    You can use ar[:] to slice whole array, reasons are explained in first two statements.
+
+slice is like a struct by definition and it contains 3 parts.
+
+    A pointer that points to where slice starts.
+    The length of slice.
+    Capacity, the length from start index to end index of slice.
+
+There are some built-in functions for slice.
+
+    len gets the length of slice.
+    cap gets the maximum length of slice
+    append appends one or more elements to slice, and returns slice .
+    copy copies elements from one slice to the other, and returns the number of elements that were copied.
+
+
+map
+--> map behaves like a dictionary in Python. Use the form map[keyType]valueType to define it.
+Some notes when you use map.
+
+    map is disorderly. Everytime you print map you will get different results. It's impossible to get values by index -you have to use key.
+    map doesn't have a fixed length. It's a reference type just like slice.
+    len works for map also. It returns how many keys that map has.
+    It's quite easy to change the value through map. Simply use numbers["one"]=11 to change the value of key one to 11.
+
+map is a reference type. If two maps point to same underlying data, any change will affect both of them.
+
